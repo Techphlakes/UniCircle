@@ -1,0 +1,153 @@
+<link rel="stylesheet" href="/css/style.css">
+
+
+<section class="create-container">
+
+    <h1>Create Lost / Found Post</h1>
+
+    <form id="postForm" enctype="multipart/form-data">
+
+        <label>Type</label>
+        <select name="type" required>
+            <option value="lost">Lost Item</option>
+            <option value="found">Found Item</option>
+        </select>
+
+
+        <label>Item title</label>
+        <input 
+            type="text" 
+            name="title"
+            placeholder="e.g. Black Laptop"
+            required
+        >
+
+
+        <label>Description</label>
+        <textarea 
+            name="description"
+            placeholder="Describe the item"
+            required
+        ></textarea>
+
+
+        <label>Location</label>
+        <input
+            type="text"
+            name="location"
+            placeholder="Where was it lost/found?"
+            required
+        >
+
+
+        <label>Contact</label>
+        <input
+            type="text"
+            name="contact"
+            placeholder="Phone number"
+            required
+        >
+
+
+        <label>Image</label>
+        <input 
+            type="file"
+            name="image"
+            accept="image/*"
+        >
+
+
+        <button type="submit">
+            Publish Post
+        </button>
+
+
+    </form>
+
+
+    <p id="message"></p>
+
+
+</section>
+
+
+
+
+<script>
+
+
+const form = document.getElementById("postForm");
+
+
+form.addEventListener("submit", async(e)=>{
+
+
+e.preventDefault();
+
+
+const data = new FormData(form);
+
+
+
+try{
+
+
+const response = await fetch("/lost-found",{
+
+method:"POST",
+
+headers:{
+Authorization:
+localStorage.getItem("token")
+},
+
+body:data
+
+});
+
+
+
+const result = await response.json();
+
+
+
+if(response.ok){
+
+
+document.getElementById("message")
+.innerHTML =
+"Post created successfully 🎉";
+
+
+form.reset();
+
+
+}
+
+
+else{
+
+
+document.getElementById("message")
+.innerHTML =
+result.error;
+
+
+}
+
+
+
+}
+
+catch(err){
+
+console.log(err);
+
+}
+
+
+});
+
+
+
+</script>

@@ -1,0 +1,517 @@
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/dashboard.css">
+
+<%- include('../partials/navbar') %>
+
+<div class="dashboard">
+
+    <section class="welcome">
+
+        <div>
+            <h1>
+                Welcome <%= user.name %> 👋
+            </h1>
+
+            <p>
+                Manage your UniCircle account
+            </p>
+        </div>
+
+        <button
+        class="btn"
+        onclick="openPostModal()"
+        >
+        Create Post
+        </button>
+
+    </section>
+
+
+
+    <section class="dashboard-grid">
+
+        <div class="box">
+            <h2>My Lost Items</h2>
+            <p><%= stats.lost_posts %></p>
+        </div>
+
+        <div class="box">
+            <h2>My Found Items</h2>
+            <p><%= stats.found_posts %></p>
+        </div>
+
+        <div class="box">
+            <h2>My Posts</h2>
+            <p><%= stats.total_posts %></p>
+        </div>
+
+    </section>
+
+
+
+    <section class="profile-card">
+
+        <div class="avatar">
+            <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+
+        <h2>
+            <%= user.name %>
+        </h2>
+
+        <p>
+            <%= user.email %>
+        </p>
+
+        <div class="profile-meta">
+
+            <div>
+                <span>Lost Posts</span>
+                <strong><%= stats.lost_posts %></strong>
+            </div>
+
+            <div>
+                <span>Found Posts</span>
+                <strong><%= stats.found_posts %></strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="my-posts">
+
+        <h2>My Recent Posts</h2>
+
+        <div class="posts-grid">
+
+            <% if(posts && posts.length > 0){ %>
+
+                <% posts.forEach(function(post){ %>
+
+                    <div class="post-item">
+
+                        <% if(post.image){ %>
+
+                            <img
+                                src="/uploads/<%= post.image %>"
+                                alt="<%= post.title %>"
+                            >
+
+                        <% } %>
+
+                        <div class="post-info">
+
+                        <div class="post-top">
+
+                        <span
+                        class="status
+                        <%= post.status === 'returned'
+                        ? 'returned'
+                        : post.type %>"
+                        >
+
+                        <%= post.status === 'returned'
+                        ? 'Returned'
+                        : post.type %>
+
+                        </span>
+
+                        <span class="post-date">
+
+                        <%= new Date(post.created_at).toLocaleDateString() %>
+
+                        </span>
+
+                        </div>
+
+                        <h3>
+                        <%= post.title %>
+                        </h3>
+
+                        <p>
+                        📍 <%= post.location %>
+                        </p>
+                            <div class="post-actions">
+
+                                <a
+                                    href="/lost-found/<%= post.id %>"
+                                    class="view-btn"
+                                >
+                                    View
+                                </a>
+                                <button
+                                    class="returned-btn"
+                                    onclick="markReturned('<%= post.id %>')"
+                                    >
+                                    Returned
+                                    </button>
+
+                                    <button
+                                    class="delete-btn"
+                                        onclick="deletePost('<%= post.id %>')"                                >
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <div class="empty-posts">
+
+                    <h3>No Posts Yet</h3>
+
+                    <p>
+                        Create your first Lost & Found post.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script>
+
+</script>
+<div id="postModal" class="modal">
+
+<div class="modal-content">
+
+<span
+class="close-btn"
+onclick="closePostModal()"
+>
+×
+</span>
+
+<h2>Create Lost & Found Post</h2>
+
+<form id="createPostForm">
+
+<select name="type" required>
+
+<option value="">
+Select Type
+</option>
+
+<option value="lost">
+Lost
+</option>
+
+<option value="found">
+Found
+</option>
+
+</select>
+
+<select name="category">
+
+<option>
+Electronics
+</option>
+
+<option>
+Documents
+</option>
+
+<option>
+Bags
+</option>
+
+<option>
+Accessories
+</option>
+
+<option>
+Books
+</option>
+
+<option>
+Others
+</option>
+
+</select>
+
+<input
+type="text"
+name="title"
+placeholder="Title"
+required
+>
+
+<textarea
+name="description"
+placeholder="Description"
+required
+></textarea>
+
+<input
+type="text"
+name="location"
+placeholder="Location"
+required
+>
+
+<input
+type="text"
+name="contact"
+placeholder="Contact"
+required
+>
+
+<input
+type="file"
+id="imageInput"
+name="image"
+>
+
+<img
+id="previewImage"
+class="preview-image"
+style="display:none;"
+>
+
+<button type="submit">
+
+Create Post
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+<%- include('../partials/footer') %>
+
+<script>
+
+async function deletePost(id){
+
+    const proceed =
+    confirm("Are you sure you want to delete this post?");
+
+    if(!proceed){
+        return;
+    }
+
+    try{
+
+        const response =
+        await fetch(`/lost-found/${id}`,{
+            method:"DELETE"
+        });
+
+        const data =
+        await response.json();
+
+        location.reload();
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        alert("Failed to delete post");
+
+    }
+
+}
+
+</script>
+<script>
+
+async function markReturned(id){
+
+try{
+
+await fetch(`/lost-found/${id}/returned`,{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+status:"returned"
+})
+
+});
+
+location.reload();
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+</script>
+<script>
+
+function openPostModal(){
+
+const modal =
+document.getElementById("postModal");
+
+modal.style.display = "flex";
+
+setTimeout(()=>{
+
+modal.classList.add("show");
+
+},10);
+
+}
+
+function closePostModal(){
+
+const modal =
+document.getElementById("postModal");
+
+modal.classList.remove("show");
+
+setTimeout(()=>{
+
+modal.style.display="none";
+
+},250);
+
+}
+
+document
+.getElementById("imageInput")
+.addEventListener(
+"change",
+function(){
+
+const file =
+this.files[0];
+
+if(file){
+
+const reader =
+new FileReader();
+
+reader.onload =
+function(e){
+
+const preview =
+document.getElementById(
+"previewImage"
+);
+
+preview.src =
+e.target.result;
+
+preview.style.display =
+"block";
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+}
+);
+
+document
+.getElementById("createPostForm")
+.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+const formData =
+new FormData(this);
+
+try{
+
+const response =
+await fetch(
+"/lost-found",
+{
+method:"POST",
+body:formData
+}
+);
+
+const data =
+await response.json();
+
+if(response.ok){
+
+closePostModal();
+
+location.reload();
+
+}
+
+else{
+
+alert(
+data.message ||
+data.error
+);
+
+}
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
+);
+
+</script>
+<script>
+
+async function markSold(id){
+
+try{
+
+await fetch(
+`/marketplace/${id}/sold`,
+{
+method:"PUT"
+}
+);
+
+location.reload();
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+</script>

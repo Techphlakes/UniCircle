@@ -1,0 +1,537 @@
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/lost-found.css">
+
+<%- include('../partials/navbar') %>
+
+<main class="page-shell">
+
+<section class="lostfound-hero">
+
+<h1>Lost & Found</h1>
+
+<p>
+Recover lost belongings and help fellow students.
+</p>
+
+<div class="hero-actions">
+
+<button
+class="create-btn"
+onclick="handleCreatePost()"
+>
++ Create Post
+</button>
+
+<a
+href="/dashboard"
+class="dashboard-btn"
+>
+My Dashboard
+</a>
+
+</div>
+
+</section>
+
+<section class="stats-section">
+
+<div class="stat-box">
+<h2><%= posts.filter(p=>p.type==="lost").length %></h2>
+<p>Lost Items</p>
+</div>
+
+<div class="stat-box">
+<h2><%= posts.filter(p=>p.type==="found").length %></h2>
+<p>Found Items</p>
+</div>
+
+<div class="stat-box">
+<h2><%= posts.length %></h2>
+<p>Total Posts</p>
+</div>
+
+</section>
+
+<section class="filter-card">
+
+<div class="search-wrapper">
+
+<input
+id="search"
+placeholder="🔍 Search items, locations or descriptions..."
+>
+
+</div>
+
+<div class="filter-row">
+
+<div class="tabs">
+
+<button onclick="filterType('all')">
+All
+</button>
+
+<button onclick="filterType('lost')">
+Lost
+</button>
+
+<button onclick="filterType('found')">
+Found
+</button>
+
+</div>
+
+<select id="category">
+
+<option value="">
+All Categories
+</option>
+
+<option value="Electronics">
+Electronics
+</option>
+
+<option value="Documents">
+Documents
+</option>
+
+<option value="Bags">
+Bags
+</option>
+
+<option value="Accessories">
+Accessories
+</option>
+
+<option value="Others">
+Others
+</option>
+
+</select>
+
+</div>
+
+</section>
+
+<section class="post-grid">
+
+<% posts.forEach(post=>{ %>
+
+<article
+class="post-card"
+data-type="<%=post.type%>"
+>
+
+<%
+let imagePath = post.image;
+
+if(
+imagePath &&
+!imagePath.startsWith("http") &&
+!imagePath.startsWith("/")
+){
+imagePath = "/uploads/" + imagePath;
+}
+%>
+
+<img
+src="<%= imagePath || '/images/no-image.png' %>"
+alt="<%= post.title %>"
+>
+
+<div class="post-content">
+
+<div class="card-top">
+
+<span class="pill <%=post.type%>">
+<%=post.type%>
+</span>
+
+<span class="date">
+<%= new Date(post.created_at).toLocaleDateString() %>
+</span>
+
+</div>
+
+<h2><%=post.title%></h2>
+
+<p><%=post.description%></p>
+
+<div class="meta">
+📍 <%=post.location%>
+</div>
+
+<div class="meta">
+👤 <%=post.name%>
+</div>
+
+<div class="meta">
+🏷️ <%=post.category || "General" %>
+</div>
+
+<div class="card-actions">
+
+<a
+href="/lost-found/<%=post.id%>"
+class="contact-btn"
+>
+View Details
+</a>
+
+</div>
+
+</div>
+
+</article>
+
+<% }) %>
+
+</section>
+
+</main>
+<div id="toast">
+
+Success
+
+</div>
+
+<script>
+
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+
+function applyFilter(){
+
+const text =
+search.value.toLowerCase();
+
+const selectedCategory =
+category.value.toLowerCase();
+
+document
+.querySelectorAll(".post-card")
+.forEach(card=>{
+
+const content =
+card.innerText.toLowerCase();
+
+const matchesSearch =
+content.includes(text);
+
+const matchesCategory =
+selectedCategory === ""
+||
+content.includes(selectedCategory);
+
+card.style.display =
+(matchesSearch && matchesCategory)
+?
+"block"
+:
+"none";
+
+});
+
+}
+
+search.addEventListener(
+"input",
+applyFilter
+);
+
+category.addEventListener(
+"change",
+applyFilter
+);
+
+function filterType(type){
+
+document.querySelectorAll(".post-card")
+.forEach(card=>{
+
+card.style.display =
+(
+type==="all"
+||
+card.dataset.type===type
+)
+?
+"block"
+:
+"none";
+
+});
+
+}
+
+</script>
+
+<div id="postModal" class="modal">
+
+<div class="modal-content">
+
+<span class="close-btn"
+onclick="closePostModal()">
+×
+</span>
+
+<h2>Create Lost & Found Post</h2>
+
+<form id="createPostForm">
+
+<select name="type" required>
+
+<option value="">
+Select Type
+</option>
+
+<option value="lost">
+Lost
+</option>
+
+<option value="found">
+Found
+</option>
+
+</select>
+
+<select name="category">
+
+<option>Electronics</option>
+<option>Documents</option>
+<option>Bags</option>
+<option>Accessories</option>
+<option>Books</option>
+<option>Others</option>
+
+</select>
+
+<input
+type="text"
+name="title"
+placeholder="Title"
+required
+>
+
+<textarea
+name="description"
+placeholder="Description"
+required
+></textarea>
+
+<input
+type="text"
+name="location"
+placeholder="Location"
+required
+>
+
+<input
+type="text"
+name="contact"
+placeholder="Contact"
+required
+>
+
+<input
+type="file"
+id="imageInput"
+name="image"
+>
+
+<img
+id="previewImage"
+class="preview-image"
+style="display:none;">
+
+<button type="submit">
+
+Submit
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+<%- include('../partials/footer') %>
+
+<script>
+
+function handleCreatePost(){
+
+const hasToken =
+document.cookie.includes("token=");
+
+if(!hasToken){
+
+const proceed =
+confirm(
+"You must login before creating a post."
+);
+
+if(proceed){
+
+window.location.href =
+"/login";
+
+}
+
+return;
+
+}
+
+openPostModal();
+
+}
+
+function openPostModal(){
+
+document
+.getElementById("postModal")
+.style.display="flex";
+
+}
+
+function closePostModal(){
+
+document
+.getElementById("postModal")
+.style.display="none";
+
+}
+
+document
+.getElementById("imageInput")
+.addEventListener(
+"change",
+function(){
+
+const file =
+this.files[0];
+
+if(file){
+
+const reader =
+new FileReader();
+
+reader.onload=function(e){
+
+const preview =
+document.getElementById(
+"previewImage"
+);
+
+preview.src =
+e.target.result;
+
+preview.style.display=
+"block";
+
+preview.classList.add("preview-image");
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+}
+);
+
+
+
+function showToast(message){
+
+const toast =
+document.getElementById("toast");
+
+toast.innerText =
+message;
+
+toast.style.display =
+"block";
+
+setTimeout(()=>{
+
+toast.style.display =
+"none";
+
+},3000);
+
+}
+
+showToast("Welcome to Lost & Found");
+
+document
+.getElementById("createPostForm")
+.addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+
+const formData = new FormData(this);
+
+
+try{
+
+
+const response = await fetch("/lost-found",{
+
+method:"POST",
+
+body:formData
+
+});
+
+
+
+const result =
+await response.json();
+
+
+
+if(response.ok){
+
+
+showToast(
+result.message || "Post created successfully 🎉"
+);
+
+
+closePostModal();
+
+
+setTimeout(()=>{
+
+location.reload();
+
+},1000);
+
+
+}
+
+else{
+showToast(
+result.message || result.error || "Failed to create post"
+);
+}
+
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+showToast("Something went wrong");
+
+}
+
+
+});
+</script>
+

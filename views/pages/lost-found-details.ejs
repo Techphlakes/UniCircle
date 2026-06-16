@@ -1,0 +1,100 @@
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/lost-found.css">
+<%- include('../partials/navbar') %>
+
+<div class="details-container">
+
+<div class="details-card">
+
+<div class="image-column">
+
+<img
+src="<%= !post.image
+? '/images/no-image.png'
+: post.image.startsWith('http')
+? post.image
+: '/uploads/' + post.image %>"
+alt="<%= post.title %>"
+class="details-image"
+>
+
+<div class="safety-card">
+
+<h3>🛡️ Safety Tip</h3>
+
+<p>
+Always meet in a public location when
+returning or collecting an item.
+
+Verify ownership before handing over
+valuable belongings.
+</p>
+
+</div>
+
+</div>
+<div class="details-content">
+
+<div class="details-header">
+
+<span class="pill <%= post.type %>">
+<%= post.type %>
+</span>
+
+<span>
+<%= new Date(post.created_at).toLocaleDateString() %>
+</span>
+
+</div>
+
+<h1 class="details-title">
+<%= post.title %>
+</h1>
+
+<p class="details-description">
+<%= post.description %>
+</p>
+
+<div class="details-meta">
+
+<div class="meta-row">
+📍 <%= post.location %>
+</div>
+
+<div class="meta-row">
+👤 <%= post.name %>
+</div>
+
+<div class="meta-row">
+📞 <%= post.contact %>
+</div>
+
+<div class="meta-row">
+🏷️ <%= post.category %>
+</div>
+
+</div>
+
+<div class="details-actions">
+
+<a
+href="javascript:history.back()"
+class="back-btn"
+>
+← Back
+</a>
+
+<a
+href="tel:<%= post.contact %>"
+class="claim-btn"
+>
+📞 Call Owner
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>

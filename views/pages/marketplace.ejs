@@ -1,0 +1,643 @@
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/marketplace.css">
+
+<%- include('../partials/navbar') %>
+
+<main class="marketplace">
+
+    <!-- HERO -->
+
+    <section class="market-hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Campus Marketplace
+            </h1>
+
+            <p>
+                Buy, Sell and Discover amazing products from students around you.
+            </p>
+
+            <button
+            class="sell-btn"
+            onclick="openSellModal()"
+            >
+            + Sell Product
+            </button>
+
+        </div>
+
+    </section>
+
+    <section class="marketplace-filters">
+
+        <div class="search-box">
+
+        <input
+        type="text"
+        id="productSearch"
+        placeholder="Search products..."
+        >
+
+        </div>
+
+        <div class="category-filters">
+
+        <button class="filter-btn active" data-filter="all">
+        All
+        </button>
+
+        <button class="filter-btn" data-filter="Electronics">
+        Electronics
+        </button>
+
+        <button class="filter-btn" data-filter="Books">
+        Books
+        </button>
+
+        <button class="filter-btn" data-filter="Furniture">
+        Furniture
+        </button>
+
+        <button class="filter-btn" data-filter="Fashion">
+        Fashion
+        </button>
+
+        <button class="filter-btn" data-filter="Food">
+        Food
+        </button>
+
+        <button class="filter-btn" data-filter="used">
+        Student Deals
+        </button>
+
+        <button class="filter-btn" data-filter="regular">
+        Campus Store
+        </button>
+
+        </div>
+
+    </section>
+
+
+    <section class="featured-section">
+
+<div class="section-header">
+
+<h2>
+🔥 Featured Products
+</h2>
+
+</div>
+
+<div class="featured-carousel">
+
+<% featuredProducts.forEach(product=>{ %>
+
+<a
+href="/products/<%= product.id %>"
+class="featured-card"
+>
+
+
+<div class="featured-image">
+
+<img
+src="<%= product.image && product.image.startsWith('http')
+? product.image
+: '/uploads/' + product.image %>"
+alt=""
+>
+
+<span class="featured-badge">
+🔥 Featured
+</span>
+
+<% if(product.product_type === "used"){ %>
+
+<span class="deal-badge">
+🎓 Student Deal
+</span>
+
+<% } %>
+
+</div>
+
+<div class="featured-info">
+
+<h3>
+<%= product.title %>
+</h3>
+
+<p class="featured-price">
+
+GH₵ <%= product.price %>
+
+</p>
+
+<span class="featured-seller">
+
+<%= product.name %>
+
+</span>
+
+</div>
+
+</a>
+
+<% }) %>
+
+</div>
+
+</section>
+
+    <!-- CATEGORIES -->
+
+    <section class="categories">
+
+        <div class="category-card">
+            💻 Electronics
+        </div>
+
+        <div class="category-card">
+            📚 Books
+        </div>
+
+        <div class="category-card">
+            🛏️ Hostel Items
+        </div>
+
+        <div class="category-card">
+            👕 Fashion
+        </div>
+
+        <div class="category-card">
+            🍲 Kitchen
+        </div>
+
+        <div class="category-card">
+            🎒 Accessories
+        </div>
+
+    </section>
+
+
+    <!-- FEATURED PRODUCTS -->
+
+    <section class="section-title">
+        <h2>🔥 Featured Products</h2>
+    </section>
+
+    <div class="carousel">
+
+        <% products
+        .filter(product=>product.featured)
+        .forEach(product=>{ %>
+
+            <div class="featured-card">
+
+                <img
+                src="<%= product.image.startsWith('http')
+                ? product.image
+                : '/uploads/' + product.image %>"
+                alt=""
+                >
+                <div class="featured-info">
+
+                    <h3>
+                        <%= product.title %>
+                    </h3>
+
+                    <p>
+                        GH₵ <%= product.price %>
+                    </p>
+
+                </div>
+
+            </div>
+
+        <% }) %>
+
+    </div>
+
+
+    <!-- STUDENT DEALS -->
+
+    <section class="section-title">
+        <h2>🎓 Student Deals</h2>
+    </section>
+
+    <div class="products-grid">
+
+        <% products
+        .filter(product=>product.product_type === "used")
+        .forEach(product=>{ %>
+
+            <div
+            class="product-card"
+
+            data-title="<%= product.title.toLowerCase() %>"
+
+            data-category="<%= product.category %>"
+
+            data-type="<%= product.product_type %>"
+            >
+
+            <div class="product-image">
+
+            <img
+            src="<%= product.image && product.image.startsWith('http')
+            ? product.image
+            : '/uploads/' + product.image %>"
+            alt="<%= product.title %>"
+            >
+
+            <% if(product.status === 'sold'){ %>
+
+            <span class="sold-badge">
+            SOLD
+            </span>
+
+            <% } else { %>
+
+            <span class="available-badge">
+            AVAILABLE
+            </span>
+
+            <% } %>
+
+            </div>
+
+                <div class="product-content">
+
+                    <span class="used-badge">
+                        USED
+                    </span>
+
+                    <h3>
+                        <%= product.title %>
+                    </h3>
+
+                    <p class="price">
+                        GH₵ <%= product.price %>
+                    </p>
+
+                    <p class="seller">
+                        <%= product.name %>
+                    </p>
+
+                    <a
+                    href="/products/<%= product.id %>"
+                    class="view-btn"
+                    >
+                        View Product
+                    </a>
+
+                </div>
+
+            </div>
+
+        <% }) %>
+
+    </div>
+
+
+    <!-- CAMPUS STORE -->
+
+    <section class="section-title">
+        <h2>🛒 Campus Store</h2>
+    </section>
+
+    <div class="products-grid">
+
+        <% products
+        .filter(product=>product.product_type !== "used")
+        .forEach(product=>{ %>
+
+            <div
+            class="product-card"
+
+            data-title="<%= product.title.toLowerCase() %>"
+
+            data-category="<%= product.category %>"
+
+            data-type="<%= product.product_type %>"
+            >
+
+                <img
+                src="<%= product.image.startsWith('http')
+                ? product.image
+                : '/uploads/' + product.image %>"
+                alt=""
+                >
+                <div class="product-content">
+
+                    <h3>
+                        <%= product.title %>
+                    </h3>
+
+                    <p class="price">
+                        GH₵ <%= product.price %>
+                    </p>
+
+                    <p class="seller">
+                        <%= product.name %>
+                    </p>
+
+                    <a
+                    href="/products/<%= product.id %>"
+                    class="view-btn"
+                    >
+                        View Product
+                    </a>
+
+                </div>
+
+            </div>
+
+        <% }) %>
+
+    </div>
+
+</main>
+
+
+
+<!-- SELL MODAL -->
+
+<div id="sellModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+        class="close-btn"
+        onclick="closeSellModal()"
+        >
+            ×
+        </span>
+
+        <h2>Sell Product</h2>
+
+        <form
+        id="sellProductForm"
+        enctype="multipart/form-data"
+        >
+
+            <input
+            type="text"
+            name="title"
+            placeholder="Product Name"
+            required
+            >
+
+            <textarea
+            name="description"
+            placeholder="Description"
+            required
+            ></textarea>
+
+            <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            required
+            >
+
+            <select name="category">
+
+                <option>Electronics</option>
+                <option>Books</option>
+                <option>Fashion</option>
+                <option>Hostel Items</option>
+                <option>Accessories</option>
+
+            </select>
+
+            <select name="product_type">
+
+                <option value="regular">
+                    Campus Store Product
+                </option>
+
+                <option value="used">
+                    Student Deal (Used Item)
+                </option>
+
+            </select>
+
+            <input
+            type="number"
+            name="quantity"
+            placeholder="Quantity"
+            value="1"
+            >
+
+            <input
+            type="file"
+            name="image"
+            >
+
+            <button type="submit">
+                Publish Product
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function openSellModal(){
+
+document
+.getElementById("sellModal")
+.style.display="flex";
+
+}
+
+function closeSellModal(){
+
+document
+.getElementById("sellModal")
+.style.display="none";
+
+}
+
+document
+.getElementById("sellProductForm")
+.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+const formData =
+new FormData(this);
+
+const response =
+await fetch(
+"/products",
+{
+method:"POST",
+body:formData
+}
+);
+
+if(response.ok){
+
+closeSellModal();
+
+location.reload();
+
+}
+
+}
+);
+
+</script>
+<script>
+
+const carousel =
+document.querySelector(
+".featured-carousel"
+);
+
+let scrollAmount = 0;
+
+setInterval(()=>{
+
+if(!carousel) return;
+
+scrollAmount += 300;
+
+if(
+scrollAmount >=
+carousel.scrollWidth
+)
+{
+scrollAmount = 0;
+}
+
+carousel.scrollTo({
+
+left:scrollAmount,
+
+behavior:"smooth"
+
+});
+
+},3000);
+
+</script>
+<script>
+
+const searchInput =
+document.getElementById(
+"productSearch"
+);
+
+const products =
+document.querySelectorAll(
+".product-card"
+);
+
+const filterBtns =
+document.querySelectorAll(
+".filter-btn"
+);
+
+let currentFilter = "all";
+
+searchInput?.addEventListener(
+"keyup",
+filterProducts
+);
+
+filterBtns.forEach(btn=>{
+
+btn.addEventListener(
+"click",
+()=>{
+
+filterBtns.forEach(
+b=>b.classList.remove(
+"active"
+)
+);
+
+btn.classList.add(
+"active"
+);
+
+currentFilter =
+btn.dataset.filter;
+
+filterProducts();
+
+}
+);
+
+});
+
+function filterProducts(){
+
+const searchText =
+searchInput.value
+.toLowerCase();
+
+products.forEach(card=>{
+
+const title =
+card.dataset.title;
+
+const category =
+card.dataset.category;
+
+const type =
+card.dataset.type;
+
+const matchSearch =
+title.includes(
+searchText
+);
+
+const matchCategory =
+
+currentFilter === "all"
+
+||
+
+category === currentFilter
+
+||
+
+type === currentFilter;
+
+if(
+matchSearch &&
+matchCategory
+){
+
+card.style.display =
+"block";
+
+}
+
+else{
+
+card.style.display =
+"none";
+
+}
+
+});
+
+}
+
+</script>
+
+<%- include('../partials/footer') %>

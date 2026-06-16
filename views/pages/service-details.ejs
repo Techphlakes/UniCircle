@@ -1,0 +1,167 @@
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/service-details.css">
+
+<%- include('../partials/navbar') %>
+
+<div class="service-details-container">
+
+<div class="service-details-card">
+
+<div class="service-image-section">
+
+<img
+src="<%= service.image && service.image.startsWith('http')
+? service.image
+: '/uploads/' + service.image %>"
+alt="<%= service.title %>"
+class="service-image"
+
+>
+
+<div class="service-tip">
+
+<h3>💡 Hiring Tip</h3>
+
+<p>
+Always discuss requirements,
+delivery timeline and pricing
+before work begins.
+</p>
+
+</div>
+
+</div>
+
+<div class="service-content">
+
+<div class="service-header">
+
+<span class="service-category">
+<%= service.category %>
+</span>
+
+<% if(service.featured){ %>
+
+<span class="featured-badge">
+⭐ Featured
+</span>
+
+<% } %>
+
+</div>
+
+<h1>
+<%= service.title %>
+</h1>
+
+<p class="provider-name">
+
+👤 <%= service.name %>
+
+</p>
+
+<p class="service-description">
+
+<%= service.description %>
+
+</p>
+
+<div class="service-price">
+
+Starting From
+
+<strong>
+GH₵ <%= service.price %>
+</strong>
+
+</div>
+
+<div class="service-actions">
+
+<a
+href="https://wa.me/<%= service.phone %>?text=Hello%20<%= service.name %>%2C%20I%20am%20interested%20in%20your%20<%= service.title %>%20service."
+target="_blank"
+class="contact-btn whatsapp-btn"
+>
+💬 Hire Professional
+</a>
+
+<button
+onclick="history.back()"
+class="back-btn"
+>
+← Back
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<section class="similar-services">
+
+<h2>
+Similar Services
+</h2>
+
+<div class="similar-carousel">
+
+<% if(similarServices &&
+similarServices.length > 0){ %>
+
+<% similarServices.forEach(service=>{ %>
+
+<a
+href="/services/<%= service.id %>"
+class="similar-card"
+>
+
+<img
+src="<%= service.image && service.image.startsWith('http')
+? service.image
+: '/uploads/' + service.image %>"
+alt="<%= service.title %>"
+>
+
+<div class="similar-content">
+
+<span class="similar-category">
+<%= service.category %>
+</span>
+
+<h3>
+<%= service.title %>
+</h3>
+
+<p>
+👤 <%= service.name %>
+</p>
+
+<div class="similar-price">
+
+GH₵ <%= service.price %>
+
+</div>
+
+</div>
+
+</a>
+
+<% }) %>
+
+<% } else { %>
+
+<p>
+No similar services found.
+</p>
+
+<% } %>
+
+</div>
+
+</section>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,46 @@
+<nav class="navbar">
+<div class="logo">
+🎓 UniCircle
+</div>
+<div class="nav-links">
+
+<a href="/">
+Home
+</a>
+
+<a href="/lost-found">
+Lost & Found
+</a>
+
+<a href="/products">
+Marketplace
+</a>
+
+<a href="/services/page">Services</a>
+
+
+<% if(user){ %>
+
+<a href="/dashboard">
+Dashboard
+</a>
+
+<a href="/logout">
+Logout
+</a>
+
+<% } else { %>
+
+<a href="/login">
+Login
+</a>
+
+<a href="/register">
+Register
+</a>
+
+<% } %>
+
+</div>
+
+</nav>

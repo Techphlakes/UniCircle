@@ -1,0 +1,344 @@
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/services.css">
+
+<%- include('../partials/navbar') %>
+
+<section class="services-hero">
+
+<div class="hero-content">
+
+<h1>
+Find Campus Professionals
+</h1>
+
+<p>
+Photographers • Designers • Developers • Tutors • Technicians
+</p>
+
+<button
+class="offer-btn"
+onclick="openServiceModal()"
+
+>
+
+Offer a Service </button>
+
+</div>
+
+</section>
+
+<section class="service-categories">
+
+<button class="category-chip active">
+All
+</button>
+
+<button class="category-chip">
+Photography
+</button>
+
+<button class="category-chip">
+Graphic Design
+</button>
+
+<button class="category-chip">
+Programming
+</button>
+
+<button class="category-chip">
+Tutoring
+</button>
+
+<button class="category-chip">
+Repairs
+</button>
+
+<button class="category-chip">
+Printing
+</button>
+
+</section>
+
+<section class="featured-section">
+
+<h2>
+🌟 Featured Professionals
+</h2>
+
+<div
+class="featured-carousel"
+id="featuredCarousel"
+>
+
+<% services
+.filter(service => service.featured)
+.forEach(service => { %>
+
+<a
+href="/services/<%= service.id %>"
+class="featured-card"
+
+>
+
+<img
+src="<%= service.image && service.image.startsWith('http')
+? service.image
+: '/uploads/' + service.image %>"
+alt="<%= service.title %>"
+>
+
+<div class="featured-info">
+
+<h3>
+<%= service.title %>
+</h3>
+
+<div class="verified-badge">
+🎓 Verified Student
+</div>
+
+<p>
+<%= service.name %>
+</p>
+
+<span>
+GH₵ <%= service.price %>
+</span>
+
+</div>
+
+</a>
+
+<% }) %>
+
+</div>
+
+</section>
+
+<section class="services-section">
+
+<h2>
+🎓 Student Professionals
+</h2>
+
+<div class="services-grid">
+
+<% services.forEach(service=>{ %>
+
+<div class="service-card">
+
+<img
+src="<%= service.image && service.image.startsWith('http')
+? service.image
+: '/uploads/' + service.image %>"
+alt="<%= service.title %>"
+>
+
+<div class="service-content">
+
+<span class="service-category">
+<%= service.category %>
+</span>
+
+<% if(service.featured){ %>
+
+<div class="top-pro-badge">
+⭐ Top Professional
+</div>
+
+<% } %>
+
+<h3>
+<%= service.title %>
+</h3>
+
+<p>
+<%= service.description %>
+</p>
+
+<div class="service-footer">
+
+<span class="service-price">
+From GH₵<%= service.price %>
+</span>
+
+<a
+href="/services/<%= service.id %>"
+class="view-profile-btn"
+
+>
+
+View Profile </a>
+
+</div>
+
+</div>
+
+</div>
+
+<% }) %>
+
+</div>
+
+</section>
+
+<div
+id="serviceModal"
+class="service-modal"
+>
+
+<div class="modal-content">
+
+<span
+class="close-modal"
+onclick="closeServiceModal()"
+
+>
+
+× </span>
+
+<h2>
+Offer a Service
+</h2>
+
+<form
+action="/services"
+method="POST"
+enctype="multipart/form-data"
+>
+
+<input
+type="text"
+name="title"
+placeholder="Service Title"
+required
+
+>
+
+<textarea
+name="description"
+placeholder="Describe your service"
+required
+></textarea>
+
+<input
+type="number"
+name="price"
+placeholder="Starting Price"
+required
+
+>
+
+<select
+name="category"
+required
+
+>
+
+<option>
+Photography
+</option>
+
+<option>
+Graphic Design
+</option>
+
+<option>
+Programming
+</option>
+
+<option>
+Tutoring
+</option>
+
+<option>
+Repairs
+</option>
+
+<option>
+Printing
+</option>
+
+<option>
+Other
+</option>
+
+</select>
+
+<input
+type="file"
+name="image"
+required
+
+>
+
+<button type="submit">
+Publish Service
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+function openServiceModal(){
+
+document
+.getElementById("serviceModal")
+.style.display="flex";
+
+}
+
+function closeServiceModal(){
+
+document
+.getElementById("serviceModal")
+.style.display="none";
+
+}
+
+</script>
+<script>
+
+const carousel =
+document.getElementById(
+"featuredCarousel"
+);
+
+let scrollAmount = 0;
+
+function autoScroll(){
+
+if(!carousel) return;
+
+scrollAmount += 1;
+
+carousel.scrollLeft =
+scrollAmount;
+
+if(
+
+scrollAmount >=
+
+carousel.scrollWidth
+-
+carousel.clientWidth
+
+){
+
+scrollAmount = 0;
+
+}
+
+}
+
+setInterval(
+autoScroll,
+30
+);
+
+</script>
+<%- include('../partials/footer') %>

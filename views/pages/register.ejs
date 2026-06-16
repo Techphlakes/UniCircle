@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:450px;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+h1{
+    text-align:center;
+    color:#2563eb;
+    margin-bottom:10px;
+}
+
+p{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+input, select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+.login-link{
+    text-align:center;
+    margin-top:20px;
+}
+
+.login-link a{
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+#error{
+    color:red;
+    text-align:center;
+    margin-top:15px;
+}
+
+#success{
+    color:green;
+    text-align:center;
+    margin-top:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>UniCircle</h1>
+    <p>Create your account</p>
+
+    <form id="registerForm" method="post">
+
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="fullname" required>
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="email" required>
+        </div>
+
+        <div class="input-group">
+            <label>Student ID</label>
+            <input type="text" id="studentId">
+        </div>
+
+        <div class="input-group">
+            <label>University</label>
+            <select id="university">
+                <option value="">Select University</option>
+                <option>University of Cape Coast</option>
+                <option>University of Ghana</option>
+                <option>KNUST</option>
+                <option>UENR</option>
+                <option>UEW</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" required>
+        </div>
+
+        <div class="input-group">
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword" required>
+        </div>
+
+        <button type="submit">Create Account</button>
+
+        <div id="error"></div>
+        <div id="success"></div>
+
+    </form>
+
+    <div class="login-link">
+        Already have an account?
+        <a href="login">Login</a>
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("registerForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    if(password !== confirmPassword){
+        document.getElementById("error")
+        .innerText = "Passwords do not match";
+        return;
+    }
+
+    try{
+
+        const response = await fetch(
+            "/auth/register",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+             body:JSON.stringify({
+
+                name:
+                document.getElementById("fullname").value,
+                email:
+                document.getElementById("email").value,
+                password,
+                phone:
+                document.getElementById("studentId").value
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if(response.ok){
+
+            document.getElementById("success")
+            .innerText = "Registration Successful";
+
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 1500);
+
+        }else{
+
+        document.getElementById("error")
+        .innerText = data.message || data.error || "Registration failed";
+
+        }
+
+    }catch(error){
+
+        document.getElementById("error")
+        .innerText = "Unable to connect to server";
+
+    }
+
+});
+</script>
+
+</body>
+</html>

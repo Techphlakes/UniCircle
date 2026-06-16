@@ -1,0 +1,199 @@
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/product-details.css">
+
+<%- include('../partials/navbar') %>
+
+<div class="product-page">
+
+<div class="product-wrapper">
+
+<div class="product-image">
+
+<img
+src="<%= product.image && product.image.startsWith('http')
+? product.image
+: '/uploads/' + product.image %>"
+alt="<%= product.title %>"
+>
+
+<div class="product-tip">
+
+<div class="tip-icon">
+🛡️
+</div>
+
+<div>
+
+<h4>Campus Safety Tip</h4>
+
+<p>
+Meet sellers in public campus locations and inspect items before making payment.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="product-info">
+
+<span class="category-pill">
+<%= product.category %>
+</span>
+
+<h1>
+<%= product.title %>
+</h1>
+
+<div class="price">
+
+GH₵ <%= product.price %>
+
+</div>
+<div class="product-status">
+
+<% if(product.status === 'sold'){ %>
+
+<span class="status-sold">
+SOLD
+</span>
+
+<% } else { %>
+
+<span class="status-available">
+AVAILABLE
+</span>
+
+<% } %>
+
+</div>
+
+<div class="seller-box">
+
+<h3>Seller Information</h3>
+
+<p>
+👤 <%= product.name %>
+</p>
+
+<p>
+📞 <%= product.phone || "Not Available" %>
+</p>
+
+</div>
+
+<div class="product-meta">
+
+<div>
+<strong>Condition</strong>
+<p>
+<%= product.condition || "Not Specified" %>
+</p>
+</div>
+
+<div>
+<strong>Quantity</strong>
+<p>
+<%= product.quantity || 1 %>
+</p>
+</div>
+
+<div>
+<strong>Status</strong>
+<p>
+<%= product.status || "Available" %>
+</p>
+</div>
+
+</div>
+
+<div class="description-box">
+
+<h3>Description</h3>
+
+<p>
+<%= product.description %>
+</p>
+
+</div>
+
+<div class="action-buttons">
+
+<a
+href="tel:<%= product.phone %>"
+class="call-btn"
+>
+📞 Call Seller
+</a>
+
+<a
+href="https://wa.me/<%= product.phone %>"
+target="_blank"
+class="whatsapp-btn"
+>
+💬 WhatsApp
+</a>
+
+</div>
+
+<a
+href="/products"
+class="back-btn"
+>
+← Back To Marketplace
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<section class="similar-section">
+
+<h2>
+You May Also Like
+</h2>
+
+<div class="similar-carousel">
+
+<% similarProducts.forEach(product=>{ %>
+
+<a
+href="/products/<%= product.id %>"
+class="similar-card"
+>
+
+<img
+src="<%= product.image && product.image.startsWith('http')
+? product.image
+: '/uploads/' + product.image %>"
+alt=""
+>
+
+<div class="similar-info">
+
+<h3>
+<%= product.title %>
+</h3>
+
+<p class="similar-price">
+GH₵ <%= product.price %>
+</p>
+
+<span class="seller-name">
+<%= product.name %>
+</span>
+
+</div>
+
+</a>
+
+<% }) %>
+
+</div>
+
+</section>
+
+<%- include('../partials/footer') %>
